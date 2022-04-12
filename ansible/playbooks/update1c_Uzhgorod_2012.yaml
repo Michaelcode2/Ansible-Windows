@@ -1,0 +1,69 @@
+---
+# Playbook для обновления периферийных информационных баз
+
+- name: Update 1C Enterprise
+  hosts: store_servers_Uzhgorod_2012
+
+# Переменные доступные плэйбуку
+  vars:
+    v8version: 8.3.9.2309
+    server_agent_srv_name: '1C:Enterprise 8.3 Server Agent'
+    DataBaseName: "localhost/Retail"
+    DataBase: /S"localhost/Retail"
+    AdminUser: /N"Intellect" /p "Intel+756" /WA-
+    v8dir: C:\Program Files (x86)\1cv8\8.3.9.2309\bin\
+    v8exe: C:\Program Files (x86)\1cv8\8.3.9.2309\bin\1cv8.exe
+    srv_1c_pwd: "Intel+756"
+ 
+  tasks:
+    # Пингуемся перед запуском первой задачи
+    - name: Test connection
+      win_ping:
+
+    - name: Kill 1cv8s.exe command
+      #ignore_errors: yes
+      win_command: cmd.exe /c tasklist | find /i "1cv8s.exe" && taskkill /IM 1cv8s.exe /T /F || echo process "1cv8s.exe" not running.
+
+    - name: Kill 1cv8c.exe command
+      #ignore_errors: yes
+      win_command: cmd.exe /c tasklist | find /i "1cv8c.exe" && taskkill /IM 1cv8c.exe /T /F || echo process "1cv8c.exe" not running.
+
+    - name: Kill 1cv8.exe command
+      #ignore_errors: yes
+      win_command: cmd.exe /c tasklist | find /i "1cv8.exe" && taskkill /IM 1cv8.exe /T /F || echo process "1cv8.exe" not running.
+
+    - name: Kill RBDExchange.exe command
+      #ignore_errors: yes
+      win_command: cmd.exe /c tasklist | find /i "RBDExchange.exe" && taskkill /IM RBDExchange.exe /T /F || echo process "RBDExchange.exe" not running.
+
+    # Проверка наличия службы сервера 1С
+    - name: Check if a server agent service is installed
+      win_service:
+        name: '{{ server_agent_srv_name }}'
+      register: server_agent_srv_info 
+
+   # Остановка службы сервера 1С
+    - name: Stop server agent service
+      win_service:
+        name: '{{ server_agent_srv_name }}'
+        state: stopped
+      when: server_agent_srv_info.exists
+
+    # Запуск службы сервера 1С
+    - name: Start server agent service
+      win_service:
+        name: '{{ server_agent_srv_name }}'
+        state: started
+      when: server_agent_srv_info.exists
+
+    # Запускаем на обновление RBD Exchange
+    - name: Start RBD Exchange service
+      win_command: cmd.exe /C CD C:\RBDExchange && RBDExchange.exe /b /e
+
+    # Обновление конфигурации базы данных
+    - name: Configuration 1C Update
+      win_command: cmd.exe /C CD "{{v8dir}}" && start /wait 1cv8.exe CONFIG {{DataBase}} {{AdminUser}} /UpdateDBCfg /UCКодРазрешения
+
+    # Запускаем на обновление RBD Exchange
+    - name: Start RBD Exchange finall
+      win_command: cmd.exe /C CD C:\RBDExchange && RBDExchange.exe /b /e

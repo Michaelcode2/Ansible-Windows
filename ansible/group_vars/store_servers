@@ -1,0 +1,10 @@
+ansible_user: Intellect
+ansible_password: Intel+2017
+ansible_port: 5985
+ansible_connection: winrm
+#ansible_winrm_transport: credssp
+ansible_winrm_transport: ntlm
+#ansible_winrm_transport: basic
+ansible_winrm_server_cert_validation: ignore
+#ansible_winrm_credssp_disable_tlsv1_2: true
+#flex_win_service_name: test_service

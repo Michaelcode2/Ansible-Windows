@@ -1,0 +1,14 @@
+---
+# Playbook для обновления периферийных информационных баз
+
+- name: Ping 1C Enterprise
+  hosts: store_servers
+
+# Переменные доступные плэйбуку
+  vars:
+    v8version: 8.3.9.2309
+
+  tasks:
+    # Пингуемся перед запуском первой задачи
+    - name: Test connection
+      win_ping:

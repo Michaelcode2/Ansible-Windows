@@ -1,0 +1,68 @@
+
+[store_servers_Uzhgorod_2008]
+Zakarpatska    ansible_host=192.168.107.100    #Закарпатська w2008 
+
+[store_servers_Selo_2008]
+Vyshkovo       ansible_host=192.168.111.150     #Вишково w2008
+Ilnytsa        ansible_host=192.168.112.150     #Ільниця w2008
+Kushnytsa      ansible_host=192.168.114.150     #Кушниця w2008
+Sokyrnytsa     ansible_host=192.168.115.150     #Сокирниця w2008
+Iza            ansible_host=192.168.116.50      #Іза w2008 
+Hust_5         ansible_host=192.168.121.150     #Хуст 5 w2008 
+Pryborzhavske  ansible_host=192.168.129.100     #Приборжавське w2008
+V.Bychkiv      ansible_host=192.168.140.47      #В.Бичків w2008
+Bilky_2        ansible_host=192.168.122.150     #Білки 2 w2008 
+Bilky          ansible_host=192.168.147.150     #Білки w2008
+Kushnytsa_2    ansible_host=192.168.11.194      #Кушниця 2 w2008 
+Vynogradiv_OPT ansible_host=192.168.117.100     #Виноградів ОПТ
+
+[store_servers_Uzhgorod_2012]
+Osetiya        ansible_host=192.168.118.100     #Осетія
+8Bereznya      ansible_host=192.168.130.150     #8 Березня
+Koryatovycha   ansible_host=192.168.141.100     #Koryatovycha
+Zankovetska    ansible_host=192.168.146.100     #Заньковецька
+Era            ansible_host=192.168.108.100     #Ера
+Prospekt       ansible_host=192.168.155.150     #проспектМаркет
+
+[store_servers_Selo_2012]
+Dovge          ansible_host=192.168.106.100     #Довге
+Irshava        ansible_host=192.168.109.150     #Іршава
+V.Dobron       ansible_host=192.168.110.50      #В. Добронь
+Velyatyno      ansible_host=192.168.120.150     #Велятино
+BeregovoMarket ansible_host=192.168.123.150     #Берегово маркет
+Ardanovo       ansible_host=192.168.124.150     #Арданово
+Polyana        ansible_host=192.168.125.150     #Поляна
+Volovets       ansible_host=192.168.126.150     #Воловець
+M.Rakovets     ansible_host=192.168.127.150     #М. Раковець
+V.Rakovets     ansible_host=192.168.128.150     #В. Раковець
+V.Vodyane      ansible_host=192.168.131.150     #В. Водяне
+Onok           ansible_host=192.168.132.150     #Онок
+Siltse         ansible_host=192.168.133.150     #Сільце 
+Lisichevo      ansible_host=192.168.134.150     #Лисичево 
+Hust_Market    ansible_host=192.168.135.100     #Хуст маркет
+v.Komyaty      ansible_host=192.168.136.100     #В. Комяти 
+Yasinya        ansible_host=192.168.137.100     #Ясіня 
+Negrovo        ansible_host=192.168.138.100     #Негрово 
+Loza           ansible_host=192.168.153.150     #Loza 
+Irshava_new    ansible_host=192.168.139.100     #Іршава новий 
+Uglya          ansible_host=192.168.142.100     #Угля
+Dovge_2        ansible_host=192.168.143.100     #Довге 2 
+Mizhgirya      ansible_host=192.168.144.100     #Міжгіря
+Vel.Bereznyj   ansible_host=192.168.145.100     #Вел.Березний 
+Vilok          ansible_host=192.168.148.100     #Вілок 
+Seredne        ansible_host=192.168.149.100     #Середнє
+Dubrynychi     ansible_host=192.168.151.100     #Дубриничі
+Chop_Market    ansible_host=192.168.154.100     #Чоп Маркет
+Borzhavske     ansible_host=192.168.152.100     #Боржавське
+Uzhgorod_OPT   ansible_host=192.168.119.150     #Ужгород ОПТ
+
+[store_servers_2012:children]
+store_servers_Selo_2012
+store_servers_Uzhgorod_2012
+
+[store_servers_2008:children]
+store_servers_Selo_2008
+store_servers_Uzhgorod_2008
+
+[store]
+Ilnytsa        ansible_host=192.168.112.150     #Ільниця w2008

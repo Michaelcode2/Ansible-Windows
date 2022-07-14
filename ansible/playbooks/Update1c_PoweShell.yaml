@@ -1,0 +1,56 @@
+---
+# Playbook для поновлення периферійних інформаційних баз
+- name: Configurator Update 1C Enterprise
+  hosts: store
+  strategy: free
+
+# Змінні для виконання Playbook
+  vars:
+    Srvr: 'localhost'
+    Ref: 'Retail'
+    Usr: 'Intellect'
+    Pwd: 'Intel+756'
+    ExchangeCode: '001'
+    DataBase: /S"localhost/Retail"
+    #AdminUser: /N"Intellect" /p "Intel+756" /WA-
+    v8dir: C:\Program Files (x86)\1cv8\8.3.9.2309\bin\
+    #v8exe: C:\Program Files (x86)\1cv8\8.3.9.2309\bin\1cv8.exe
+ 
+  tasks:
+
+    - name: Copy to server script StartRBD.ps1
+      win_copy:
+        src: ../StartRBD.ps1
+        dest: C:\RBDExchange\StartRBD.ps1
+
+    - name: Copy to server script ExitAll.ps1
+      win_copy:
+        src: ../ExitAll.ps1
+        dest: C:\RBDExchange\ExitAll.ps1
+
+    - name: Kill old RBDExchange.exe command
+      #ignore_errors: yes
+      win_command: cmd.exe /c tasklist | find /i "RBDExchange.exe" && taskkill /IM RBDExchange.exe /T /F || echo process "RBDExchange.exe" not running.
+
+    - name: Launch Exchange before update
+      win_command: C:\Windows\SysWOW64\cmd /c powershell -ExecutionPolicy ByPass "& 'C:\RBDExchange\StartRBD.ps1' -Srvr {{Srvr}} -Ref {{Ref}} -Usr {{Usr}} -Pwd {{Pwd}} -ExchangeCode '{{ExchangeCode}}'"
+      args:
+        chdir: C:\RBDExchange
+
+    - name: Launch Exit All users before update
+      win_command: C:\Windows\SysWOW64\cmd /c powershell -ExecutionPolicy ByPass "& 'C:\RBDExchange\ExitAll.ps1' -Srvr {{Srvr}} -Ref {{Ref}}"
+      args:
+        chdir: C:\RBDExchange
+
+    - name: Kill all 1cv8.exe
+      win_command: cmd.exe /c tasklist | find /i "1cv8.exe" && taskkill /IM 1cv8.exe /T /F || echo process "1cv8.exe" not running.
+      ignore_errors: yes
+
+    # Обновление конфигурации базы данных
+    - name: Configuration 1C Update
+      win_command: cmd.exe /C CD "{{v8dir}}" && start /wait 1cv8.exe CONFIG /S"{{Srvr}}/{{Ref}}" /N{{Usr}} /P {{Pwd}} /WA- /UpdateDBCfg /UCКодРазрешения
+
+    - name: Launch Final Exchange
+      win_command: C:\Windows\SysWOW64\cmd /c powershell -ExecutionPolicy ByPass "& 'C:\RBDExchange\StartRBD.ps1' -Srvr {{Srvr}} -Ref {{Ref}} -Usr {{Usr}} -Pwd {{Pwd}} -ExchangeCode '{{ExchangeCode}}'"
+      args:
+        chdir: C:\RBDExchange
